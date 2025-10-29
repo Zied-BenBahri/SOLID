@@ -1,53 +1,43 @@
 package com.directi.training.isp.exercise;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+// ...existing code...
+public class TimedDoor implements Lockable, Openable, TimeOutNotifiable {
+    private boolean locked;
+    private boolean open;
 
-public class TimedDoor implements Door
-{
-    private static final int TIME_OUT = 100;
-    private boolean _locked;
-    private boolean _opened;
-
-    public TimedDoor(Timer timer)
-    {
-        timer.register(TIME_OUT, this);
+    @Override
+    public void lock() {
+        locked = true;
+        System.out.println("TimedDoor locked");
     }
 
     @Override
-    public void lock()
-    {
-        _locked = true;
+    public void unlock() {
+        locked = false;
+        System.out.println("TimedDoor unlocked");
     }
 
     @Override
-    public void unlock()
-    {
-        _locked = false;
-    }
-
-    @Override
-    public void open()
-    {
-        if (!_locked) {
-            _opened = true;
+    public void open() {
+        if (!locked) {
+            open = true;
+            System.out.println("TimedDoor opened");
+        } else {
+            System.out.println("TimedDoor cannot open while locked");
         }
     }
 
     @Override
-    public void close()
-    {
-        _opened = false;
+    public void close() {
+        open = false;
+        System.out.println("TimedDoor closed");
     }
 
     @Override
-    public void timeOutCallback()
-    {
-        _locked = true;
-    }
-
-    @Override
-    public void proximityCallback()
-    {
-        throw new NotImplementedException();
+    public void timeOutCallback() {
+        // Example behavior: on timeout, close and lock
+        System.out.println("Timeout -> closing and locking");
+        close();
+        lock();
     }
 }

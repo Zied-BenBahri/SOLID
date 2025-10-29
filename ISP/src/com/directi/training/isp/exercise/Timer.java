@@ -1,19 +1,13 @@
 package com.directi.training.isp.exercise;
 
-import java.util.TimerTask;
+public class Timer {
+    private final TimeOutNotifiable notifiable;
 
-public class Timer
-{
-    public void register(long timeOut, final Door door)
-    {
-        java.util.Timer timerUtility = new java.util.Timer();
-        timerUtility.schedule(new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                door.timeOutCallback();
-            }
-        }, timeOut);
+    public Timer(TimeOutNotifiable notifiable) {
+        this.notifiable = notifiable;
+    }
+
+    public void trigger() {
+        notifiable.timeOutCallback();
     }
 }
