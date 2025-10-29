@@ -1,32 +1,35 @@
 package com.directi.training.lsp.exercise;
 
-public class Pool
-{
-    public void run()
-    {
-        Duck donaldDuck = new Duck();
-        Duck electricDuck = new ElectronicDuck();
-        quack(donaldDuck, electricDuck);
-        swim(donaldDuck, electricDuck);
+// ...existing code...
+public class Pool {
+    public static void main(String[] args) {
+        new Pool().run();
     }
 
-    private void quack(Duck... ducks)
-    {
-        for (Duck duck : ducks) {
+    public void run() {
+        IDuck donaldDuck = new Duck();
+        IDuck electricDuck = new ElectronicDuck(); // off by default, still safe
+
+        IDuck[] ducks = new IDuck[] { donaldDuck, electricDuck };
+
+        quack(ducks);
+        swim(ducks);
+
+        // Optional: show powered-on behavior still works
+        ((ElectronicDuck) electricDuck).turnOn();
+        quack(ducks);
+        swim(ducks);
+    }
+
+    private void quack(IDuck[] ducks) {
+        for (IDuck duck : ducks) {
             duck.quack();
         }
     }
 
-    private void swim(Duck... ducks)
-    {
-        for (Duck duck : ducks) {
+    private void swim(IDuck[] ducks) {
+        for (IDuck duck : ducks) {
             duck.swim();
         }
-    }
-
-    public static void main(String[] args)
-    {
-        Pool pool = new Pool();
-        pool.run();
     }
 }
