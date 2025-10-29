@@ -1,67 +1,27 @@
 package com.directi.training.ocp.exercise;
 
-public class ResourceAllocator
-{
-    private static final int INVALID_RESOURCE_ID = -1;
+// ...existing code...
+// Refactored: remove internal branching and depend on Resource abstraction.
 
-    public int allocate(ResourceType resourceType)
-    {
-        int resourceId;
-        switch (resourceType) {
-        case TIME_SLOT:
-            resourceId = findFreeTimeSlot();
-            markTimeSlotBusy(resourceId);
-            break;
-        case SPACE_SLOT:
-            resourceId = findFreeSpaceSlot();
-            markSpaceSlotBusy(resourceId);
-            break;
-        default:
-            System.out.println("ERROR: Attempted to allocate invalid resource");
-            resourceId = INVALID_RESOURCE_ID;
-            break;
-        }
-        return resourceId;
+public class ResourceAllocator {
+    // New OCP-compliant API
+    public int allocate(Resource resource) {
+        return resource.allocate();
     }
 
-    public void free(ResourceType resourceType, int resourceId)
-    {
-        switch (resourceType) {
-        case TIME_SLOT:
-            markTimeSlotFree(resourceId);
-            break;
-        case SPACE_SLOT:
-            markSpaceSlotFree(resourceId);
-            break;
-        default:
-            System.out.println("ERROR: attempted to free invalid resource");
-            break;
-        }
+    public void free(Resource resource, int resourceId) {
+        resource.free(resourceId);
     }
 
-    private void markSpaceSlotFree(int resourceId)
-    {
+    // Backward-compatible overloads using a registry-based factory (no switch
+    // here).
+    @Deprecated
+    public int allocate(ResourceType type) {
+        return allocate(ResourceFactory.create(type));
     }
 
-    private void markTimeSlotFree(int resourceId)
-    {
-    }
-
-    private void markSpaceSlotBusy(int resourceId)
-    {
-    }
-
-    private int findFreeSpaceSlot()
-    {
-        return 0;
-    }
-
-    private void markTimeSlotBusy(int resourceId)
-    {
-    }
-
-    private int findFreeTimeSlot()
-    {
-        return 0;
+    @Deprecated
+    public void free(ResourceType type, int resourceId) {
+        free(ResourceFactory.create(type), resourceId);
     }
 }
