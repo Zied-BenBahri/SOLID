@@ -1,44 +1,43 @@
 package com.directi.training.srp.exercise;
 
-import java.util.Arrays;
-import java.util.List;
+//import java.util.Arrays;
+//import java.util.List;
 
-public class CarManager
-{
-    private List<Car> _carsDb = Arrays
-        .asList(new Car("1", "Golf III", "Volkswagen"), new Car("2", "Multipla", "Fiat"),
-            new Car("3", "Megane", "Renault"));
+public class CarManager {
+    // ...existing code...
+    // Replaced in favor of repository + services
+    // private List<Car> _carsDb = Arrays
+    // .asList(new Car("1", "Golf III", "Volkswagen"), new Car("2", "Multipla",
+    // "Fiat"),
+    // new Car("3", "Megane", "Renault"));
+    // ...existing code...
 
-    public Car getFromDb(final String carId)
-    {
-        for (Car car : _carsDb) {
-            if (car.getId().equals(carId)) {
-                return car;
-            }
-        }
-        return null;
+    private final CarRepository repository;
+    private final CarNameFormatter formatter;
+    private final CarSelector selector;
+
+    public CarManager() {
+        this.repository = new CarRepository();
+        this.formatter = new CarNameFormatter();
+        this.selector = new CarSelector();
     }
 
-    public String getCarsNames()
-    {
-        StringBuilder sb = new StringBuilder();
-        for (Car car : _carsDb) {
-            sb.append(car.getBrand());
-            sb.append(" ");
-            sb.append(car.getModel());
-            sb.append(", ");
-        }
-        return sb.substring(0, sb.length() - 2);
+    // Useful for tests/injection if needed
+    public CarManager(CarRepository repository, CarNameFormatter formatter, CarSelector selector) {
+        this.repository = repository;
+        this.formatter = formatter;
+        this.selector = selector;
     }
 
-    public Car getBestCar()
-    {
-        Car bestCar = null;
-        for (Car car : _carsDb) {
-            if (bestCar == null || car.getModel().compareTo(bestCar.getModel()) > 0) {
-                bestCar = car;
-            }
-        }
-        return bestCar;
+    public Car getFromDb(final String carId) {
+        return repository.getById(carId);
+    }
+
+    public String getCarsNames() {
+        return formatter.formatNames(repository.getAll());
+    }
+
+    public Car getBestCar() {
+        return selector.selectBest(repository.getAll());
     }
 }
